@@ -12,6 +12,7 @@ model = LiteLlm(
     model=os.getenv("KIMI_MODEL"),
 )
 
+
 async def get_current_time() -> str:
     """
     获取当前时间
@@ -28,15 +29,12 @@ root_agent = Agent(
     instruction="""
     你是一个非常有用的助手, 可以通过使用playwright浏览器工具获取信息
     """,
-    tools=[get_current_time,
+    tools=[
+        get_current_time,
         MCPToolset(
             connection_params=StdioServerParameters(
-                command='npx',
-                args=[
-                    "-y", 
-                     "@playwright/mcp@latest"
-                ],
-                timeout=20)
+                command="npx", args=["-y", "@playwright/mcp@latest"], timeout=20
             )
-        ],
+        ),
+    ],
 )

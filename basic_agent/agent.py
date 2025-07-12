@@ -1,5 +1,3 @@
-
-
 import os
 import random
 import time
@@ -19,6 +17,7 @@ model = LiteLlm(
     model=os.getenv("KIMI_MODEL"),
 )
 
+
 async def get_current_time() -> str:
     """
     获取当前时间
@@ -27,20 +26,19 @@ async def get_current_time() -> str:
     """
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+
 async def get_stock_notices(symbol: str) -> str:
     """Chinese A-Share stock notices.
 
     Args:
         symbol: stock symbol
     """
-    long_symbol =  symbol + ".SH" if symbol.startswith("6") else symbol+ ".SZ"
-    
+    long_symbol = symbol + ".SH" if symbol.startswith("6") else symbol + ".SZ"
+
     url = f"https://datacenter.eastmoney.com/securities/api/data/get?type=RTP_F10_ADVANCE_DETAIL_NEW&params={long_symbol}&p=1&source=HSF10&client=PC&v=04314507208280951"
-    
-    
+
     response = await httpx.AsyncClient().get(url)
     return response.json()
-
 
 
 async def make_hq_request(url: str, params: object) -> dict[str, Any] | None:
@@ -48,14 +46,16 @@ async def make_hq_request(url: str, params: object) -> dict[str, Any] | None:
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(url,params =params, timeout=30.0)
+            response = await client.get(url, params=params, timeout=30.0)
             response.raise_for_status()
             return response.json()
         except Exception:
             return None
 
 
-async def get_stock_hist(symbol: str, period: str, start_date: str,end_date: str) -> str: #pd.DataFrame:
+async def get_stock_hist(
+    symbol: str, period: str, start_date: str, end_date: str
+) -> str:  # pd.DataFrame:
     """Chinese A-Share stock historical data.
 
     Args:
@@ -64,24 +64,24 @@ async def get_stock_hist(symbol: str, period: str, start_date: str,end_date: str
         start_date: start date
         end_date: End date
     """
-    
+
     market_code = 1 if symbol.startswith("6") else 0
     period_dict = {"daily": "101", "weekly": "102", "monthly": "103"}
     url = "https://push2his.eastmoney.com/api/qt/stock/kline/get"
-    date1 = start_date.replace('-','')
-    date2 = end_date.replace('-','')
+    date1 = start_date.replace("-", "")
+    date2 = end_date.replace("-", "")
     params = {
         "fields1": "f1,f2,f3,f4,f5,f6",
         "fields2": "f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61,f116",
         "ut": "7eea3edcaed734bea9cbfc24409ed989",
         "klt": period_dict[period],
-        "fqt": "1", #1. 前复权 2. 后复权 0. 不复权
+        "fqt": "1",  # 1. 前复权 2. 后复权 0. 不复权
         "secid": f"{market_code}.{symbol}",
         "beg": date1,
         "end": date2,
-    }  
+    }
     data_json = await make_hq_request(url, params)
-    
+
     if not (data_json["data"] and data_json["data"]["klines"]):
         return pd.DataFrame()
     temp_df = pd.DataFrame([item.split(",") for item in data_json["data"]["klines"]])
@@ -127,10 +127,9 @@ async def get_stock_hist(symbol: str, period: str, start_date: str,end_date: str
             "换手率",
         ]
     ]
-    
+
     return temp_df.to_json()
 
-        
 
 root_agent = Agent(
     name="basic_agent",
@@ -139,5 +138,5 @@ root_agent = Agent(
     instruction="""
     你是一个非常有用的助手, 可以通过调用`get_current_time`获取当前的时间, 并通过`get_stock_notices`查询股票的公告信息.
     """,
-    tools=[get_current_time,get_stock_hist,get_stock_notices],
+    tools=[get_current_time, get_stock_hist, get_stock_notices],
 )

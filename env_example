@@ -1,0 +1,20 @@
+# LM-Studio
+LOCAL_QWEN30B="lm_studio/qwen/qwen3-30b-a3b"
+LM_STUDIO_API_BASE="http://localhost:1234/v1"
+LM_STUDIO_API_KEY=sk-xxxxxxxxxxxxxxxxxxx
+
+# SGLang
+SGLANG_QWEN32B="openai/qwen/qwen3-32b"
+SGLANG_OPENAI_BASE_URL="http://cuadk:8000/v1"
+
+# OpenRouter
+OPENROUTER_CLAUDE = "openrouter/anthropic/claude-3.7-sonnet"
+OPENROUTER_API_KEY=sk-xxxxxxxxxxxxxxxxxxx
+
+#Kimi-K2
+KIMI_MODEL="openai/kimi-k2-0711-preview"
+OPENAI_BASE_URL="https://api.moonshot.cn/v1"
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxx
+
+
+WUYING_API_KEY=akm-xxxxxxxxxxxxxxxxxxx
