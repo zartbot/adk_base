@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv("../.env")
 
 model = LiteLlm(
-    model=os.getenv("KIMI_MODEL"),
+    model=os.getenv("LOCAL_QWEN30B"),
 )
 
 
