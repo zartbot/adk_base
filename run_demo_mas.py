@@ -7,6 +7,15 @@ from google.genai import types
 
 from stateful_multi_agent.agent import root_agent as multi_agent
 
+import sys
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    stream=sys.stdout
+)
+
 initial_state = {"portfolio": {}}
 
 #创建Session DB
@@ -93,13 +102,15 @@ async def call_agent_async(query: str, runner, user_id):
 
 
 async def run_conversation():
-   while True:
-       user_input = input("You: ")
-       if user_input.lower() in ["exit", "quit"]:
-           print("Ending conversation.")
-           break
-       
-       await call_agent_async(user_input,runner=runner, user_id=USER_ID)
+    user_input = """请帮助我执行如下操作: 
+    1. 添加1200股新易盛(股票代码:300502)和900股中际旭创(股票代码:300308)到投资组合,  
+    2. 获取投资组合内最近90天的行情走势 
+    3. 获取投资组合内每个股票评论信息 
+    4. 获取投资组合每个股票的公告信息 
+    5. 根据返回的结果进行量化评估, 对行情数据进行技术分析, 例如RSI/KDJ/MACD等技术指标分析, 然后对评论信息和公告信息中的利空和利多信息进行评估分析, 评估分数数值为0-100, 分数越高, 表示股票表现越好.
+    最后给出一个当前市值分析和详细的风险分析报告
+    """   
+    await call_agent_async(user_input,runner=runner, user_id=USER_ID)
 
 if __name__ == "__main__":
     asyncio.run(run_conversation())

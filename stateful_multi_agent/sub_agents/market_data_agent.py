@@ -15,7 +15,7 @@ from ..tools.current_time import get_current_time
 load_dotenv("../../.env")
 
 model = LiteLlm(
-    model=os.getenv("LOCAL_QWEN30B"),
+    model=os.getenv("KIMI_MODEL"),
 )
 
 

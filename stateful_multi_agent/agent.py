@@ -30,22 +30,11 @@ root_agent = Agent(
     Portfolio information: {portfolio}
     </portfolio>
     
-    You have access to the following specialized agents:
-
-    1. MarketDataAgent
-       - For questions about stock market data
-    
-    2. NewsAgent
-      - For questions about specific companies recent news 
-    
-    3. CompanyAgent
-      - For questions about specific companies recent comments
-      
-    4. PortfolioAgent
-      - For managing your portfolio
-      - You can ask questions about your portfolio
-      - You can add new stocks to your portfolio
-      - you can update the number of shares of a stock in your portfolio
+    You are responsible for delegating tasks to the following agent:
+    - `MarketDataAgent` : For getting market data.
+    - `NewsAgent` : For getting stocks's news.
+    - `CommentAgent` : For getting stocks's comments.
+    - `PortfolioAgent` : For managing portfolio
 
     You also have access to the following tools:
     - get_current_time
