@@ -9,6 +9,7 @@ SGLANG_OPENAI_BASE_URL="http://cuadk:8000/v1"
 
 # OpenRouter
 OPENROUTER_CLAUDE = "openrouter/anthropic/claude-3.7-sonnet"
+OPENROUTER_GEMINI_FLASH="openrouter/google/gemini-2.5-flash"
 OPENROUTER_API_KEY=sk-xxxxxxxxxxxxxxxxxxx
 
 #Kimi-K2
@@ -16,5 +17,7 @@ KIMI_MODEL="openai/kimi-k2-0711-preview"
 OPENAI_BASE_URL="https://api.moonshot.cn/v1"
 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxx
 
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=AIxxxxxxxxxxxxxxxxxxxx
 
 WUYING_API_KEY=akm-xxxxxxxxxxxxxxxxxxx
