@@ -1,8 +1,12 @@
 import os
 from dotenv import load_dotenv
+from typing import Optional
+from google.genai import types
+
 from google.adk.agents import Agent
 from google.adk.tools.agent_tool import AgentTool
 from google.adk.models.lite_llm import LiteLlm
+
 
 from .sub_agents.news_agent import NewsAgent
 from .sub_agents.market_data_agent import MarketDataAgent
@@ -10,13 +14,27 @@ from .sub_agents.comment_agent import CommentAgent
 from .sub_agents.portfolio_agent import PortfolioAgent
 from .tools.current_time import get_current_time
 
+from .callback.agent_cb import before_agent_callback, after_agent_callback,add_state_cb
+from .callback.model_cb import before_model_cb, after_model_cb
+
+
 load_dotenv("../.env")
 model = LiteLlm(
     model=os.getenv("KIMI_MODEL"),
 )
+import sys
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    stream=sys.stdout
+)
+
+    
 
 root_agent = Agent(
-    name="stateful_multi_agent",
+    name="callback_mas_agent",
     model=model,
     description="Manager agent",
     instruction="""
@@ -44,4 +62,10 @@ root_agent = Agent(
     tools=[
         get_current_time,
     ],
+    before_agent_callback=[before_agent_callback,add_state_cb],
+    after_agent_callback=after_agent_callback,
+    before_model_callback=before_model_cb,
+    after_model_callback=after_model_cb,
+
+
 )
