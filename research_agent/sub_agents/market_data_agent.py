@@ -6,19 +6,23 @@ import pandas as pd
 import httpx
 from typing import Any
 
-
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
+from google.adk.tools.tool_context import ToolContext
+from google.adk.agents import SequentialAgent
+
 from dotenv import load_dotenv
 from ..tools.current_time import get_current_time
 from ..callback.model_cb import before_model_cb,after_model_cb
-from ..callback.tool_cb import after_tool_cb
+import google.genai.types as types
 
 
 load_dotenv("../../.env")
 
 model = LiteLlm(
-    model=os.getenv("KIMI_MODEL"),
+       model=os.getenv("KIMI_MODEL"),
+       #model=os.getenv("SGLANG_QWEN32B"),
+       #api_base=os.getenv("SGLANG_OPENAI_BASE_URL"),
 )
 
 
@@ -35,7 +39,7 @@ async def make_hq_request(url: str, params: object) -> dict[str, Any] | None:
 
 
 async def get_stock_hist(
-    symbol: str, period: str, start_date: str, end_date: str
+    symbol: str, period: str, start_date: str, end_date: str, tool_context: ToolContext
 ) -> str:  # pd.DataFrame:
     """Chinese A-Share stock historical data.
 
@@ -108,12 +112,26 @@ async def get_stock_hist(
             "换手率",
         ]
     ]
+    print("Saving Market data to artifacts...")
+    csv_artifact = types.Part(
+        inline_data=types.Blob(
+            data=temp_df.to_csv(index=False).encode("utf-8"),
+            mime_type="text/csv",
+        )
+    )
+    await tool_context.save_artifact(f"{symbol}_stock_hist.csv", csv_artifact)
 
-    return temp_df.to_json()
+    return  {
+            "action": "get stock market data",
+            "status":"success",
+            "symbol": symbol,
+            "filename": f"{symbol}_stock_hist.csv",
+            "message": "Market data saved successfully in artifacts"
+        }
 
 
-MarketDataAgent = Agent(
-    name="market_data_agent",
+FetchMarketDataAgent = Agent(
+    name="fetch_market_data_agent",
     model=model,
     description="Stock market data",
     instruction="""
@@ -124,5 +142,31 @@ MarketDataAgent = Agent(
     tools=[get_current_time, get_stock_hist],
     before_model_callback=before_model_cb,
     after_model_callback=after_model_cb,
-    after_tool_callback=after_tool_cb,
+)
+
+
+
+TechnicalAnalysisAgent = Agent(
+    name="TechnicalAnalysisAgent",
+    model=model,
+    description="Technical analysis for dedicated stocks.",
+    instruction="""
+    你是一个非常资深的股票分析师, 并擅长通过K 线图、MACD、RSI 等技术指标的方式来分析和预测股票未来的走势和风险.
+    
+    你需要分析的数据以CSV格式存储于`artifacts`中. 
+    
+    请根据Artifacts中的对应股票的行情数据, 为每一只股票输出一个关于行情走势的技术分析报告, 并通过K线图、MACD、RSI 等技术指标的方式来分析和预测股票未来的走势和风险.
+    """,
+    output_key = "technical_analysis",    
+    before_model_callback=before_model_cb,
+    after_model_callback=after_model_cb,
+ )
+ 
+ 
+ # Create the sequential agent with minimal callback
+MarketDataAgent = SequentialAgent(
+    name="MarketDataAgent",
+    sub_agents=[FetchMarketDataAgent, TechnicalAnalysisAgent],
+    description="A pipeline that validates, scores, and recommends actions for sales leads",
+
 )
