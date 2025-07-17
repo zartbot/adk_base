@@ -23,7 +23,11 @@ from .callback.model_cb import before_model_cb, after_model_cb
 
 load_dotenv("../.env")
 model = LiteLlm(
-    model=os.getenv("KIMI_MODEL"),
+    #model=os.getenv("KIMI_MODEL"),
+    model=os.getenv("QWEN_MODEL_DASHSCOPE"),
+    api_base=os.getenv("DASHSCOPE_URL"),
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    
     #model=os.getenv("SGLANG_QWEN32B"),
     #api_base=os.getenv("SGLANG_OPENAI_BASE_URL"),
 )
