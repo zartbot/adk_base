@@ -58,3 +58,33 @@ def after_model_cb(
             part_cnt += 1
     return None
 
+
+def after_model_cb_with_additional_report(
+    callback_context: CallbackContext, llm_response: LlmResponse
+) -> Optional[LlmResponse]:
+    """Callback function that is called after the model is called.
+
+    Args:
+        callback_context (CallbackContext): callback context
+        llm_response (LlmResponse): LLM response
+
+    Returns:
+        Optional[LlmResponse]: Response to be returned to the user
+        
+    """
+    agent_name = callback_context.agent_name
+    print(f"[Callback] After model call for agent: {agent_name}")
+
+    # Skip processing if response is empty or has no text content
+    if not llm_response or not llm_response.content or not llm_response.content.parts:
+        return None
+    
+    # Inspect the last user message in the request contents
+    for part in llm_response.content.parts:
+        part_cnt = 0
+        if hasattr(part, "text") and part.text:
+            print(f"[Callback After model for {agent_name}]Part[{part_cnt}]: {part.text}")
+            part_cnt += 1
+        
+    return None
+

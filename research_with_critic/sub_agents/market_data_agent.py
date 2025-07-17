@@ -155,7 +155,12 @@ TechnicalAnalysisAgent = Agent(
     
     你需要分析的数据以CSV格式存储于`artifacts`中. 
     
-    请根据Artifacts中的对应股票的行情数据, 为每一只股票输出一个关于行情走势的技术分析报告, 并通过K线图、MACD、RSI 等技术指标的方式来分析和预测股票未来的走势和风险.
+    请根据Artifacts中的对应股票的行情数据:
+    1. 为每一只股票输出一个关于行情走势的技术分析报告, 并通过K线图、MACD、RSI、BOLLinger Bands 等指标来描述股票的走势和风险
+    2. 比较投资组合内的不同股票的波动率,换手率, 价格振幅, 波动周期, 成交活跃度, 风险收益特征
+    3. 计算投资组合的beta, alpha, sharpe ratio, sortino ratio等指标
+    4. 基于技术分析的结果, 预测股票未来的走势和风险. 
+    
     """,
     output_key = "technical_analysis",    
     before_model_callback=before_model_cb,

@@ -17,7 +17,8 @@ from ..callback.model_cb import before_model_cb,after_model_cb
 load_dotenv("../../.env")
 
 model = LiteLlm(
-     model=os.getenv("KIMI_MODEL"),
+    model=os.getenv("KIMI_MODEL"),
+   #  model=os.getenv("KIMI_MODEL"),
    # model=os.getenv("SGLANG_QWEN32B"),
    # api_base=os.getenv("SGLANG_OPENAI_BASE_URL"),
 )
@@ -44,9 +45,13 @@ ReportWriterAgent = Agent(
     2. Technical analysis section, give the detailed analysis of {technical_analysis}  and its impact on the portfolio.
     3. News analysis section, give the detailed analysis of {news_analysis}  and its impact on the portfolio.
     4. Comment analysis section, give the detailed analysis of {comment_analysis} and its impact on the portfolio.
-    5. An analysis of the portfolio's risk and potential system risks.
-    6. Summary of the portfolio's performance and potential risks.
-    7. Recommendations based on any concerning metrics     
+    5. The overall risk-return characteristics of the investment portfolio (e.g., Sharpe ratio, beta, maximum drawdown, volatility, etc.)
+    6. The reasonableness of asset allocation, diversification effectiveness, or exposure to specific industries/styles
+    7. The portfolio’s sensitivity to specific risk factors (e.g., market risk, interest rate risk, inflation risk, etc.)
+    8. Performance simulation of the portfolio under specific historical periods or market scenarios (e.g., stress testing, scenario analysis)
+    9. Summary of the portfolio's performance and potential system risks
+    10. Recommendations based on any concerning metrics 
+    11. Recommendations based on hedging strategies using instruments such as stock index futures/options
     
     Use markdown formatting to make the report readable and professional.
     Highlight any concerning values and provide practical recommendations.

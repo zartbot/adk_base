@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from typing import Optional
 from google.genai import types
+import logging
 
 from google.adk.agents import Agent
 from google.adk.tools.agent_tool import AgentTool
@@ -29,11 +30,11 @@ model = LiteLlm(
 import sys
 #import logging
 
-#logging.basicConfig(
-#    level=logging.DEBUG,
-#    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-#    stream=sys.stdout
-#)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    stream=sys.stdout
+)
 
 
 Parallel_Research_Agent = ParallelAgent(
